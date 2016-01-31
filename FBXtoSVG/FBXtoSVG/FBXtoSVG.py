@@ -74,6 +74,8 @@ def get_projection(node):
     if not mesh:
         print("not mesh")
     else:
+       # f.write('<path d="')
+       # f.write('<polygon points="')
         for i in mesh.GetPolygonVertices():
             point = mesh.GetControlPointAt(i)
             new_point = [0 for x in range(3)]
@@ -81,26 +83,39 @@ def get_projection(node):
             new_point[1] = point[0]*camera[0][1] + point[1]*camera[1][1] + point[2]*camera[2][1]
             new_point[2] = point[0]*camera[0][2] + point[1]*camera[1][2] + point[2]*camera[2][2]
             #print('%d : %f, %f, %f' %(i, point[0], point[1], point[2]))
-            f.write('%d,%d ' % (100+new_point[0]+50, 400-new_point[1]))
-
+            if (i%3)==0:
+                f.write('<path d="M%d %d ' % (100+new_point[0]+50, 400-new_point[1]))
+            else:
+             if (i%3)==1:
+                f.write('L%d %d ' % (100+new_point[0]+50, 400-new_point[1]))
+            #f.write('" />')
+             else:
+                if (i%3)==2:
+                     f.write('L%d %d Z" /> ' % (100+new_point[0]+50, 400-new_point[1])) #stroke="darkred" stroke-width="0.2" fill="none" />')
+                # f.write('<polygon points="')
+        #f.write('Z" /> ') # stroke="darkred" stroke-width="0.2" fill="none" />')
     for i in range(node.GetChildCount()):
+        
         get_projection(node.GetChild(i))
     
-
+     
 
 sdk_manager, scene = FbxCommon.InitializeSdkObjects()
 
 if not FbxCommon.LoadScene(sdk_manager, scene, "TeaPot.fbx"):
     print("error in LoadScene")
-
+#v=[]
+#v=  FbxCommon.FbxCamera.Position.Get()
+#v= FbxCommon.FbxMatrix.GetRow(FbxMatrix(0))
+#print v
 scale()
 #rotateX(90)
 rotateX(45)
-rotateY(35.264)
+#rotateY(35.264)
 #rotateZ(45)
 
 f.write('<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" height="500"> ')
-f.write('<polygon points="')
+#f.write('<polygon points="')
 get_projection(scene.GetRootNode())
-f.write('" stroke="darkred" stroke-width="0.2" fill="blue" />')
+f.write('" stroke="darkred" stroke-width="0.2" fill="none" />')
 f.write('</svg>')
