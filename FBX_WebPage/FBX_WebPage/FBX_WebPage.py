@@ -2,10 +2,11 @@ import os
 import FbxCommon
 import math
 
-
-
+#Globals
 width = 500
 height = 500
+
+currentPath = os.getcwd()
 
 camera = [[1, 0, 0],
           [0, 1, 0],
@@ -71,12 +72,10 @@ def rotateZ(a):
         for j in range(3):
             camera[i][j] = result[i][j]
 
-
 def get_projection(node):
-    
 
-    mesh = node.GetMesh()
-  
+    mesh = node.GetMesh
+    
     if not mesh:
         print("not mesh")
     else:
@@ -94,7 +93,7 @@ def get_projection(node):
 
         
 #Create path variables destined to create/locate .svg files
-svgpath = os.getcwd()
+svgpath = currentPath
 svgpath +="\SVG_files"
 
 #Clear SVG directory of .svg files
@@ -104,9 +103,8 @@ for file in os.listdir(svgpath):
         print "%s removed" % (file)
         os.remove(svgfile)
 
-
 #Create path variables destined to locate .fbx files
-fbxpath = os.getcwd()
+fbxpath = currentPath
 fbxpath +="\FBX_files"
 print fbxpath
 
@@ -117,7 +115,7 @@ for file in os.listdir(fbxpath):
     if file.endswith(tuple(fbxExtension)):
         print(file)
        
-        
+        #the whole path with the name of the file at the end
         fbxfile = "%s\%s" % (fbxpath,file)
         print fbxfile
        
@@ -126,13 +124,15 @@ for file in os.listdir(fbxpath):
         if not FbxCommon.LoadScene(sdk_manager, scene, fbxfile):
             print("couldn't load the scene of file %s" % (fbxfile))
 
+        #initialisation of the camera matrix (for each file, as camera is a global variable)
         camera = [[1, 0, 0],
-          [0, 1, 0],
-          [0, 0, 1]]
+                  [0, 1, 0],
+                  [0, 0, 1]]
 
         scale(4)
         rotateX(45)
 
+        #the whole path with the name of the file at the end
         svgfile = "%s\%s.svg" % (svgpath,file)
         print svgfile
         f = open(svgfile, 'w')
@@ -147,7 +147,6 @@ for file in os.listdir(fbxpath):
         f.close()
 
 
-#print os.getcwd()
 
 f=open("index.html",'w')
 if  f.errors:
@@ -159,7 +158,7 @@ for file in os.listdir(svgpath):
     if file.endswith(".svg"):
         print svgpath
         svgfile = "%s\%s" % (svgpath,file)
-                #  inserting the svg file in the website
+        #inserts the svg file in the website
         f.write( '<img src="%s" alt="%s">' % (svgfile,file) )
          
 
